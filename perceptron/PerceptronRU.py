@@ -1,8 +1,12 @@
 import random
-from src.UI.InterfaceUsuarioFactory import InterfaceUsuarioFactory
+from src.UI.InterfaceUsuarioBase import InterfaceUsuarioBase
+
 
 class PerceptronRU:
-    def __init__(self, num_entradas=7, taxa_aprendizado=0.1):
+    """
+    Classe do perceptron que contem todos as regras de negocio que são os algoritmos de treinamento e ajustes
+    """
+    def __init__(self,interface_usuario: InterfaceUsuarioBase, num_entradas=7, taxa_aprendizado=0.1):
         """
         Inicializa o Perceptron para identificação de RU
         
@@ -12,23 +16,23 @@ class PerceptronRU:
         """
         self.num_entradas = num_entradas
         self.taxa_aprendizado = taxa_aprendizado
-        
+  
         # Inicialização aleatória dos pesos entre -0.5 e 0.5
         self.pesos = [random.uniform(-0.5, 0.5) for _ in range(num_entradas)]
         self.bias = 0  # Inicializa bias como 0
-        
+    
         # RU de referência
         self.ru_referencia: list[float] = [5, 1, 4, 5, 8, 7, 4]
-        
+      
         # Inicializa a UI de interação com o User. Obs : Só está implementado a console UI
-        self.interface_usuario = InterfaceUsuarioFactory().criar_interface_usuario()
+        self.interface_usuario = interface_usuario
         self.interface_usuario.escrever("Perceptron Iniciado")
         self.interface_usuario.escrever(f"RU de Referência: {self.ru_referencia}")
         self.interface_usuario.escrever(f"Pesos iniciais: {[round(w, 3) for w in self.pesos]}")
         self.interface_usuario.escrever(f"Bias inicial: {self.bias}")
         self.interface_usuario.escrever(f"Taxa de aprendizado: {self.taxa_aprendizado}")
         self.interface_usuario.escrever("\n")
-    
+ 
 
     def definir_saida_desejada(self, entradas: list[float]):
         """
@@ -62,13 +66,12 @@ class PerceptronRU:
             Valor da net calculado para os pesos e bias atual para epoca
         """
 
-       
+   
         #O método zip irá utilizar um iterador que retornar uma tupla
         #contendo o valor atual do apontamento na lista de entradas e pesos
         #dessa forma a cada iteração terei como retorno a entrada e seu respectivo
         #peso
-        net = sum(entrada * peso for entrada, peso in zip(entradas, self.pesos)) 
-        + self.bias
+        net = sum(entrada * peso for entrada, peso in zip(entradas, self.pesos)) + self.bias
 
         return net
 
@@ -134,7 +137,7 @@ class PerceptronRU:
                 erros_epoca += 1
                 
                 # 4. Atualizar pesos para melhor convergencia do neuronio
-                for j in range(len(self.pesos)):
+                for j, _ in enumerate(self.pesos):
                     delta_w = self.taxa_aprendizado * erros_epoca * entradas[j]
                     self.pesos[j] += delta_w
                 
@@ -142,7 +145,7 @@ class PerceptronRU:
                 delta_bias = self.taxa_aprendizado * erros_epoca
                 self.bias += delta_bias
                 
-                self.interface_usuario.escrever(f"Padrão RU {i+1}: {float("".join(map(str, entradas)))}")
+                self.interface_usuario.escrever(f"Padrão RU {i+1}: {''.join(map(str, entradas))}")
                 self.interface_usuario.escrever(f"Net: {net:.3f}")
                 self.interface_usuario.escrever(f"Saída desejada: {saida_desejada:+d}, Saída obtida: {saida_obtida:+d}")
                 self.interface_usuario.escrever(f"Erro: {erros_epoca:+d}")
@@ -160,7 +163,7 @@ class PerceptronRU:
             conjunto_treinamento: lista de RU's com os padrões de dados
             (Ru superiores e inferiores)]
 
-            max_epocas: Número máximo de épocas. Como é um dataset simples
+            max_epocas: Número máximo de épocas default. Como é um dataset simples
             a literatura indica 100 epocas de forma inicial
         """
         self.interface_usuario.escrever("Iniciando treinando....")

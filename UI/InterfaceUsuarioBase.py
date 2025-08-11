@@ -1,4 +1,4 @@
-class InterfaceBase:
+class InterfaceUsuarioBase:
     def ler(self, mensagem):
         raise NotImplementedError
 

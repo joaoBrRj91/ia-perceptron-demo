@@ -1,7 +1,7 @@
 from src.UI.Console.InterfaceConsole import InterfaceConsole
 
 class InterfaceUsuarioFactory:  
-    def criar_interface_usuario(tipo="console"):
+    def criar_interface_usuario(self,tipo="console"):
         if tipo == "gui":
             raise NotImplementedError
         return InterfaceConsole()

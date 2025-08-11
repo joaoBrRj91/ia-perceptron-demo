@@ -1,4 +1,4 @@
-import InterfaceUsuarioBase
+from src.UI.InterfaceUsuarioBase import InterfaceUsuarioBase
 
 class InterfaceConsole(InterfaceUsuarioBase):
     def ler(self, mensagem):

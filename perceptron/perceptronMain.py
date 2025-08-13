@@ -1,33 +1,77 @@
 from src.perceptron.PerceptronRU import PerceptronRU
 from src.UI.InterfaceUsuarioFactory import InterfaceUsuarioFactory
 
-
 def gerar_conjunto_treinamento():
     """
     Gera conjunto de treinamento com padrões variados
+
+    Retorna 50 padrões fixos para treinamento do perceptron
+    Classe 1 -> Todos >= ru_ref
+    Classe 0 -> Pelo menos um valor < ru_ref
     """
+
     padroes = []
     
     # RU de referência
     ru_ref = [5, 1, 4, 5, 8, 7, 4]
     padroes.append(ru_ref)
     
-    # Padrões superiores (todos os dígitos maiores)
+    # Classe 1 (25 padrões)
     padroes.extend([
-        [6, 2, 5, 6, 9, 8, 5],
-        [7, 3, 6, 7, 9, 9, 6],
-        [8, 4, 7, 8, 9, 9, 7],
-        [9, 5, 8, 9, 9, 9, 8]
+        [7, 3, 9, 9, 9, 9, 9],
+        [7, 4, 7, 9, 9, 8, 9],
+        [8, 3, 7, 7, 9, 8, 9],
+        [8, 4, 8, 9, 9, 9, 9],
+        [8, 4, 9, 9, 9, 8, 8],
+        [6, 9, 7, 8, 9, 8, 7],
+        [9, 4, 9, 8, 9, 9, 7],
+        [8, 5, 8, 7, 9, 8, 7],
+        [6, 4, 6, 8, 9, 9, 9],
+        [8, 4, 6, 7, 9, 9, 6],
+        [9, 4, 9, 7, 9, 8, 8],
+        [8, 6, 9, 9, 9, 9, 6],
+        [8, 9, 8, 8, 9, 9, 8],
+        [7, 6, 8, 7, 9, 9, 7],
+        [6, 3, 7, 9, 9, 8, 8],
+        [9, 5, 6, 9, 9, 9, 9],
+        [9, 3, 6, 8, 9, 8, 9],
+        [7, 4, 6, 7, 9, 8, 6],
+        [8, 5, 7, 8, 9, 8, 6],
+        [9, 3, 7, 8, 9, 9, 6],
+        [7, 3, 9, 7, 9, 9, 6],
+        [7, 4, 9, 7, 9, 9, 9],
+        [7, 9, 9, 8, 9, 9, 6],
+        [9, 5, 7, 9, 9, 9, 9],
+        [9, 4, 8, 7, 9, 8, 6]
     ])
-    
-    # Padrões inferiores (pelo menos um dígito menor ou igual)
+
+    # Classe 0 (25 padrões)
     padroes.extend([
-        [4, 1, 4, 5, 8, 7, 4],  # Primeiro dígito menor
-        [5, 0, 4, 5, 8, 7, 4],  # Segundo dígito menor
-        [5, 1, 3, 5, 8, 7, 4],  # Terceiro dígito menor
-        [1, 0, 0, 0, 0, 0, 0],  # Todos menores
-        [2, 1, 3, 4, 5, 6, 3],  # Misturado
-        [5, 1, 4, 5, 8, 7, 3],  # Último dígito menor
+        [7, 1, 8, 7, 9, 8, 7],
+        [7, 3, 9, 9, 9, 8, 9],
+        [8, 4, 7, 9, 9, 9, 9],
+        [6, 9, 7, 8, 9, 8, 7],
+        [8, 5, 8, 7, 9, 8, 7],
+        [6, 4, 6, 8, 9, 9, 9],
+        [9, 4, 9, 7, 9, 8, 8],
+        [8, 6, 9, 9, 9, 9, 6],
+        [8, 9, 8, 8, 9, 9, 8],
+        [7, 6, 8, 7, 9, 9, 7],
+        [6, 3, 7, 9, 9, 8, 8],
+        [9, 5, 6, 9, 9, 9, 9],
+        [9, 3, 6, 8, 9, 8, 9],
+        [7, 4, 6, 7, 9, 8, 6],
+        [8, 5, 7, 8, 9, 8, 6],
+        [9, 3, 7, 8, 9, 9, 6],
+        [7, 3, 9, 7, 9, 9, 6],
+        [7, 4, 9, 7, 9, 9, 9],
+        [7, 9, 9, 8, 9, 9, 6],
+        [9, 5, 7, 9, 9, 9, 9],
+        [9, 4, 8, 7, 9, 8, 6],
+        [6, 1, 9, 9, 9, 8, 9],
+        [8, 4, 7, 9, 9, 9, 9],
+        [6, 9, 7, 8, 9, 8, 7],
+        [8, 5, 8, 7, 9, 8, 7]
     ])
     
     return padroes
@@ -51,14 +95,14 @@ if __name__ == "__main__":
     interface_usuario_comunicacao = InterfaceUsuarioFactory().criar_interface_usuario()
 
     # Criar e treinar o perceptron
-    perceptron = PerceptronRU(taxa_aprendizado=0.1, interface_usuario=interface_usuario_comunicacao)
+    perceptron = PerceptronRU(taxa_aprendizado=0.05, interface_usuario=interface_usuario_comunicacao)
     
     # Gerar conjuntos de dados
     conjunto_treinamento = gerar_conjunto_treinamento()
     conjunto_teste = gerar_conjunto_teste()
     
     # Treinar
-    perceptron.treinar(conjunto_treinamento)
+    perceptron.treinar(conjunto_treinamento, max_epocas=1000)
     
     # Testar
     perceptron.testar(conjunto_teste)

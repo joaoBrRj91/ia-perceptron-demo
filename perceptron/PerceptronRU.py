@@ -16,10 +16,11 @@ class PerceptronRU:
         """
         self.num_entradas = num_entradas
         self.taxa_aprendizado = taxa_aprendizado
+        self.treinamento_sucesso = False
   
-        # Inicialização aleatória dos pesos entre -0.5 e 0.5
-        self.pesos = [random.uniform(-0.5, 0.5) for _ in range(num_entradas)]
-        self.bias = 0  # Inicializa bias como 0
+        # Inicialização aleatória dos pesos entre -0.1 e 0.1
+        self.pesos = [random.uniform(-0.1, 0.1) for _ in range(num_entradas)]
+        self.bias = random.uniform(-0.05, 0.05)  # Inicializa bias como 0
     
         # RU de referência
         self.ru_referencia: list[float] = [5, 1, 4, 5, 8, 7, 4]
@@ -36,23 +37,16 @@ class PerceptronRU:
 
     def definir_saida_desejada(self, entradas: list[float]):
         """
-        Define a saída desejada baseada na regra:
-        +1 se valor de entradas for um RU maior que a RU do aluno
-        -1 caso contrário
-        
-        Args:
-            entradas: Lista com 7 dígitos da RU
-            
-        Returns:
-            Saída desejada (+1 ou -1)
+        Compara dígito a dígito ao invés de converter para float
         """
-        # Transforma a lista de entradas
-        # e o RU do aluno em uma RU que representa o valor float
-        # e compara para verificar se 
-        ru_entrada_neuronio = float("".join(map(str, entradas)))
-        ru_aluno = float("".join(map(str, self.ru_referencia)))
+        for i, _ in enumerate(entradas):
+            if entradas[i] > self.ru_referencia[i]:
+                return 1
+            elif entradas[i] < self.ru_referencia[i]:
+                return -1
+            
+        return 1  # Se todos os dígitos forem iguais
 
-        return 1 if ru_entrada_neuronio >= ru_aluno else -1
     
     def calcular_net(self, entradas: list[float]):
         """
@@ -118,7 +112,7 @@ class PerceptronRU:
         Returns:
             Número de erros na época
         """
-        erros_epoca = 0
+        erro_epoca = 0
         
         # Enumerate e uma função para retornar o dado e seu indice em um array.
         # Obtendo o indice somente oara exibir na interface do usuario qual padrão RU foi treinado na epoca
@@ -131,29 +125,33 @@ class PerceptronRU:
             saida_obtida = self.funcao_ativacao(net)
             
             # 3. Calcular erro - Se for zero sabemos que nao tem erro
-            erros_epoca = saida_desejada - saida_obtida
+            erro_saida = saida_desejada - saida_obtida
             
-            if erros_epoca != 0:
-                erros_epoca += 1
+            if erro_saida != 0:
+                erro_epoca += 1
                 
                 # 4. Atualizar pesos para melhor convergencia do neuronio
                 for j, _ in enumerate(self.pesos):
-                    delta_w = self.taxa_aprendizado * erros_epoca * entradas[j]
+                    delta_w = self.taxa_aprendizado * erro_saida * entradas[j]
                     self.pesos[j] += delta_w
                 
                 # 5. Atualizar bias
-                delta_bias = self.taxa_aprendizado * erros_epoca
+                delta_bias = self.taxa_aprendizado * erro_saida
                 self.bias += delta_bias
                 
+                self.interface_usuario.escrever("\n")
                 self.interface_usuario.escrever(f"Padrão RU {i+1}: {''.join(map(str, entradas))}")
                 self.interface_usuario.escrever(f"Net: {net:.3f}")
                 self.interface_usuario.escrever(f"Saída desejada: {saida_desejada:+d}, Saída obtida: {saida_obtida:+d}")
-                self.interface_usuario.escrever(f"Erro: {erros_epoca:+d}")
+                self.interface_usuario.escrever(f"Erro: {erro_saida:+d}")
                 self.interface_usuario.escrever(f"Pesos atualizados: {[round(w, 3) for w in self.pesos]}")
                 self.interface_usuario.escrever(f"Bias atualizado: {round(self.bias, 3)}")
                 self.interface_usuario.escrever("\n")
+
+            else:
+                self.interface_usuario.escrever(f"Padrão (Item {i+1}) obteve convergencia ✅ : RU {''.join(map(str, entradas))}")
         
-        return erros_epoca
+        return erro_epoca
     
     def treinar(self, conjunto_treinamento: list[list[float]], max_epocas=100):
         """
@@ -180,9 +178,11 @@ class PerceptronRU:
             self.interface_usuario.escrever("\n")
             
             if erros_epoca == 0:
+                self.treinamento_sucesso = True
                 self.interface_usuario.escrever(f"Convergencia alcançada na seguinte época : {epoca + 1}!")
                 break
-        else:
+
+        if self.treinamento_sucesso is False:
             self.interface_usuario.escrever(f"Máximo de épocas ({max_epocas}) atingido sem convergência. Ajuste o bias e os pesos iniciais antes de realizar um novo treinamento")
         
         self.interface_usuario.escrever("Treinamento Finalizado")

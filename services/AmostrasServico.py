@@ -4,7 +4,7 @@ class AmostrasServico:
     conjunto de treinamento e teste como para gerar o arquivo final
     em excel com todo o treinamento e resultado do perceptrom
     """
-    def gerar_conjunto_treinamento(self):
+    def gerar_conjunto_treinamento(self, ru_aluno_referencia:str):
         """
         Gera conjunto de treinamento com padrões variados
 
@@ -12,12 +12,12 @@ class AmostrasServico:
         Classe 1 -> Todos >= ru_ref
         Classe 0 -> Pelo menos um valor < ru_ref
         """
-
+        
         padroes = []
         
-        # RU de referência
-        ru_ref = [5, 1, 4, 5, 8, 7, 4]
-        padroes.append(ru_ref)
+        # RU de referência convertido para uma lista onde cada elemento corresponde a um digito do RU
+        ru_aluno_referencia_formatado = list(map(int, ru_aluno_referencia))
+        padroes.append(ru_aluno_referencia_formatado)
         
         # Classe 1 (25 padrões)
         padroes.extend([

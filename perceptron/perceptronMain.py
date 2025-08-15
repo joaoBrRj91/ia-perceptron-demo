@@ -7,12 +7,18 @@ if __name__ == "__main__":
 
     #Inicializa a UI de interação com o User. Obs : Só está implementado a console UI
     interface_usuario_comunicacao = InterfaceUsuarioFactory().criar_interface_usuario()
-
-    # Criar e treinar o perceptron
-    perceptron = PerceptronRU(taxa_aprendizado=0.001, interface_usuario=interface_usuario_comunicacao)
     
+    # Obter RU do Aluno através da UI
+    ru_aluno_referencia = interface_usuario_comunicacao.ler("\nDigite o seu RU para usar o mesmo como referência do percetron")
+
+     # Criar e treinar o perceptron
+    perceptron = PerceptronRU(interface_usuario=interface_usuario_comunicacao,
+                              taxa_aprendizado=0.001,
+                              num_entradas= len(ru_aluno_referencia),
+                              ru_aluno_referencia= ru_aluno_referencia)
+
     # Gerar conjuntos de dados
-    conjunto_treinamento = AmostrasServico().gerar_conjunto_treinamento()
+    conjunto_treinamento = AmostrasServico().gerar_conjunto_treinamento(ru_aluno_referencia)
     conjunto_teste = AmostrasServico().gerar_conjunto_teste()
     
     # Treinar

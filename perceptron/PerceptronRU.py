@@ -6,7 +6,7 @@ class PerceptronRU:
     """
     Classe do perceptron que contem todos as regras de negocio que são os algoritmos de treinamento e ajustes
     """
-    def __init__(self,interface_usuario: InterfaceUsuarioBase, num_entradas=7, taxa_aprendizado=0.1):
+    def __init__(self,interface_usuario: InterfaceUsuarioBase,ru_aluno_referencia:str, num_entradas=7, taxa_aprendizado=0.1):
         """
         Inicializa o Perceptron para identificação de RU
         
@@ -23,10 +23,11 @@ class PerceptronRU:
         self.bias = random.uniform(-2.0, -1.0)  # Inicializa bias entre -2.0 e -1.0
     
         # RU de referência
-        self.ru_referencia: list[float] = [5, 1, 4, 5, 8, 7, 4]
+        self.ru_referencia = list(map(int, ru_aluno_referencia))
       
         # Inicializa a UI de interação com o User. Obs : Só está implementado a console UI
         self.interface_usuario = interface_usuario
+        self.interface_usuario.escrever("\n")
         self.interface_usuario.escrever("Perceptron Iniciado")
         self.interface_usuario.escrever(f"RU de Referência: {self.ru_referencia}")
         self.interface_usuario.escrever(f"Pesos iniciais: {[round(w, 3) for w in self.pesos]}")
@@ -214,4 +215,4 @@ class PerceptronRU:
         
         # Estatistica basica para mostrar a porcentagem da precisão mediante a relação de quantidade de acertos com o total de elementos na amostra
         precisao_perceptron = (acertos / len(conjunto_teste)) * 100
-        self.interface_usuario.escrever(f"Precisão Perceptron: {acertos}/{len(conjunto_teste)} = {precisao_perceptron:.1f}%")
+        self.interface_usuario.escrever(f"\nPrecisão Perceptron: {acertos}/{len(conjunto_teste)} = {precisao_perceptron:.1f}%")

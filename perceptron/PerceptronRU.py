@@ -20,7 +20,7 @@ class PerceptronRU:
   
         # Inicialização aleatória dos pesos entre -0.1 e 0.1
         self.pesos = [random.uniform(-0.1, 0.1) for _ in range(num_entradas)]
-        self.bias = random.uniform(-0.05, 0.05)  # Inicializa bias como 0
+        self.bias = random.uniform(-2.0, -1.0)  # Inicializa bias entre -2.0 e -1.0
     
         # RU de referência
         self.ru_referencia: list[float] = [5, 1, 4, 5, 8, 7, 4]
@@ -36,16 +36,15 @@ class PerceptronRU:
  
 
     def definir_saida_desejada(self, entradas: list[float]):
-        """
-        Compara dígito a dígito ao invés de converter para float
-        """
-        for i, _ in enumerate(entradas):
-            if entradas[i] > self.ru_referencia[i]:
-                return 1
-            elif entradas[i] < self.ru_referencia[i]:
-                return -1
-            
-        return 1  # Se todos os dígitos forem iguais
+
+        # Transforma a lista de entradas
+        # e o RU do aluno em uma RU que representa o valor float
+        # e compara para verificar se 
+
+        ru_entrada_neuronio = float("".join(map(str, entradas)))
+        ru_aluno = float("".join(map(str, self.ru_referencia)))
+
+        return 1 if ru_entrada_neuronio >= ru_aluno else -1
 
     
     def calcular_net(self, entradas: list[float]):

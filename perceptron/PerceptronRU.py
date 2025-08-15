@@ -216,3 +216,37 @@ class PerceptronRU:
         # Estatistica basica para mostrar a porcentagem da precisão mediante a relação de quantidade de acertos com o total de elementos na amostra
         precisao_perceptron = (acertos / len(conjunto_teste)) * 100
         self.interface_usuario.escrever(f"\nPrecisão Perceptron: {acertos}/{len(conjunto_teste)} = {precisao_perceptron:.1f}%")
+
+
+    def testar_assertividade(self):
+        while True:
+
+            if self.treinamento_sucesso is False:
+                self.interface_usuario.escrever("\nNão é possivel continuar. Treinamento não iniciado ou não finalizado com sucesso ❌")
+                break
+
+            self.interface_usuario.escrever("\n")
+            self.interface_usuario.escrever("Iniciando Teste Assertividade")
+            self.interface_usuario.escrever(f"RU de Referência: {self.ru_referencia}")
+            self.interface_usuario.escrever(f"Pesos Convergidos: {[round(w, 3) for w in self.pesos]}")
+
+            ru_aluno_referencia = self.interface_usuario.ler("\nDigite um RU para validar o perceptron")
+            ru_aluno_referencia_entradas = list(map(int, ru_aluno_referencia))
+
+            if len(ru_aluno_referencia) != self.num_entradas:
+                    self.interface_usuario.escrever(f"\n Númeto de entradas da RU informada não corresponde ao mesmo do treinamento: {self.num_entradas}")
+
+            saida_esperada = self.definir_saida_desejada(ru_aluno_referencia_entradas)
+
+            self.interface_usuario.escrever(f"\n Saida esperada do RU {ru_aluno_referencia}: {saida_esperada}")
+
+            saida_obtida = self.predizer(ru_aluno_referencia_entradas)
+
+            self.interface_usuario.escrever(f"  Resultado: {'✅ ACERTO' if saida_esperada == saida_obtida else '❌ ERRO'}")
+
+            continuar = self.interface_usuario.ler("\n Deseja continuar ?. Y ou N")
+
+            if continuar == "Y":
+                continue
+
+            break

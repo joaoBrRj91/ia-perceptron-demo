@@ -36,3 +36,6 @@ if __name__ == "__main__":
     interface_usuario_comunicacao.escrever(f"\nTeste com o próprio RU {perceptron.ru_referencia}:")
     resultado = perceptron.predizer(perceptron.ru_referencia)
     interface_usuario_comunicacao.escrever(f"Resultado: {resultado:+d} (esperado: 1)")
+
+    # Teste manual com diversos outros RU's para validar a assetividade do percetron
+    perceptron.testar_assertividade()
